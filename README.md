@@ -11,7 +11,6 @@ Este proyecto está desarrollado con:
 
 ---
 
-![Texto alternativo](https://media.licdn.com/dms/image/v2/D5622AQFT0FcZ_YgsSQ/feedshare-shrink_800/B56ZruZFxRJwAg-/0/1764936146195?e=1766620800&v=beta&t=XAc4j7mtW9BeLHOQFUqYyPonFrgdLLWftueusSHz6UU)
 
 
 
@@ -32,6 +31,9 @@ Si estás evaluando mi perfil, este repo resume bien cómo trabajo cuando constr
 ## 🌟 Funcionalidades principales (vista producto)
 
 ### 🏠 Área pública
+
+![Texto alternativo](https://media.licdn.com/dms/image/v2/D5622AQFT0FcZ_YgsSQ/feedshare-shrink_800/B56ZruZFxRJwAg-/0/1764936146195?e=1766620800&v=beta&t=XAc4j7mtW9BeLHOQFUqYyPonFrgdLLWftueusSHz6UU)
+
 
 Sin necesidad de registrarse, cualquier usuario puede:
 
@@ -61,14 +63,20 @@ Tras registrarse y hacer login, el usuario puede:
     - Plazas ocupadas / máximas.
     - Creador/administrador del evento.
     - Enlace directo a **Google Maps** utilizando las coordenadas de la actividad.
+   
+![Texto alternativo](https://media.licdn.com/dms/image/v2/D5622AQG-ZMCHWq5xWQ/feedshare-shrink_2048_1536/B56ZruZGNsJwAk-/0/1764936148155?e=1766620800&v=beta&t=ej_t4oZ4R-d7_TVSn79ghafXUrqTBi3Mh_E5XOf--T4)
+
   - Unirse a actividades de otros usuarios o abandonarlas.
   - Visualizar:
     - Eventos que **ha creado**.
     - Eventos a los que **se ha unido**.
+      
+![Texto alternativo](https://media.licdn.com/dms/image/v2/D5622AQGiBXm2nwW11A/feedshare-shrink_2048_1536/B56ZruZGJ3K4Ak-/0/1764936147824?e=1766620800&v=beta&t=M5_eJ-y7u9MJioAWUanzvaYlHMVLqJ6DG0xhN4gpa5w)
+
+
 
 - **Interacciones avanzadas**:
-  - Reportar a otros usuarios.
-  - (Preparado) sistema de rating de actividades (valoración con estrellas).
+ sistema de rating de actividades (valoración con estrellas).
 
 ---
 
