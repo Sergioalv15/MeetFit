@@ -11,6 +11,10 @@ Este proyecto está desarrollado con:
 
 ---
 
+![Texto alternativo](https://media.licdn.com/dms/image/v2/D5622AQFT0FcZ_YgsSQ/feedshare-shrink_800/B56ZruZFxRJwAg-/0/1764936146195?e=1766620800&v=beta&t=XAc4j7mtW9BeLHOQFUqYyPonFrgdLLWftueusSHz6UU)
+
+
+
 ## 👀 Por qué este proyecto es interesante para recruiters
 
 En este proyecto he trabajado de principio a fin tanto el **lado producto** como la **parte técnica**:
