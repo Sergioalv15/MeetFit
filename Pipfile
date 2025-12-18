@@ -6,6 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+docxtpl = "*"
+python-docx = "*"
+pypandoc = "*"
 flask = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"

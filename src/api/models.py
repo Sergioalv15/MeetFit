@@ -1,152 +1,150 @@
-from datetime import datetime, timezone, time
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import (
-    String, Float, DateTime, Integer,
-    ForeignKey, Boolean, Text, Time
+    Integer,
+    Float,
+    String,
+    Text,
+    Date,
+    Time,
+    Boolean,
+    ForeignKey
 )
 from sqlalchemy.orm import relationship, mapped_column
 
-
 db = SQLAlchemy()
 
-# ==========================================================
-# USUARIOS (ADMIN / TÉCNICOS)
-# ==========================================================
+# ─────────────────────────────────────────────
+# MODELO: Usuario
+# ─────────────────────────────────────────────
 class User(db.Model):
     __tablename__ = "user"
 
     id = mapped_column(Integer, primary_key=True)
     name = mapped_column(String(120), nullable=False)
     email = mapped_column(String(120), unique=True, nullable=False)
-    password_hash = mapped_column(String(200), nullable=False)
+    password_hash = mapped_column(String(255), nullable=False)
 
-    role = mapped_column(String(50), default="admin")  
+    is_admin = mapped_column(Boolean, default=False)
 
-    active = mapped_column(Boolean, default=True)
-
-    created_at = mapped_column(
-        DateTime, default=lambda: datetime.now(timezone.utc)
-    )
-
-    albaranes = relationship("Albaran", back_populates="tecnico")
+    albaranes = relationship("Albaran", back_populates="usuario")
 
     def serialize(self):
         return {
             "id": self.id,
             "name": self.name,
             "email": self.email,
-            "role": self.role,
-            "active": self.active,
-            "created_at": self.created_at.isoformat()
+            "is_admin": self.is_admin
         }
 
 
-# ==========================================================
-# CLIENTES
-# ==========================================================
+# ─────────────────────────────────────────────
+# MODELO: Cliente
+# ─────────────────────────────────────────────
 class Cliente(db.Model):
     __tablename__ = "cliente"
 
     id = mapped_column(Integer, primary_key=True)
     nombre_empresa = mapped_column(String(200), nullable=False)
-    nif = mapped_column(String(50))
-    direccion = mapped_column(String(200))
-    cp = mapped_column(String(10))
-    poblacion = mapped_column(String(100))
-    telefono = mapped_column(String(50))
-    persona_contacto = mapped_column(String(120))
 
-    created_at = mapped_column(
-        DateTime, default=lambda: datetime.now(timezone.utc)
-    )
-
-    # Relaciones
+    tarifas = relationship("TarifaCliente", back_populates="cliente")
     albaranes = relationship("Albaran", back_populates="cliente")
 
     def serialize(self):
         return {
             "id": self.id,
-            "nombre_empresa": self.nombre_empresa,
-            "nif": self.nif,
-            "direccion": self.direccion,
-            "cp": self.cp,
-            "poblacion": self.poblacion,
-            "telefono": self.telefono,
-            "persona_contacto": self.persona_contacto
+            "nombre_empresa": self.nombre_empresa
         }
 
 
-# ==========================================================
-# TARIFAS
-# ==========================================================
-class Tarifa(db.Model):
-    __tablename__ = "tarifa"
-
-    id = mapped_column(Integer, primary_key=True)
-    nombre = mapped_column(String(120), nullable=False)
-    precio_hora = mapped_column(Float, nullable=False)
-    horas_jornada = mapped_column(Integer, default=8)
-    precio_jornada = mapped_column(Float)
-
-    activa = mapped_column(Boolean, default=True)
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "nombre": self.nombre,
-            "precio_hora": self.precio_hora,
-            "horas_jornada": self.horas_jornada,
-            "precio_jornada": self.precio_jornada,
-            "activa": self.activa
-        }
-
-
-# ==========================================================
-# ALBARÁN
-# ==========================================================
-class Albaran(db.Model):
-    __tablename__ = "albaran"
+# ─────────────────────────────────────────────
+# MODELO: Tarifa por Cliente
+# ─────────────────────────────────────────────
+class TarifaCliente(db.Model):
+    __tablename__ = "tarifa_cliente"
 
     id = mapped_column(Integer, primary_key=True)
 
     cliente_id = mapped_column(
         Integer, ForeignKey("cliente.id"), nullable=False
     )
-    tecnico_id = mapped_column(
-        Integer, ForeignKey("user.id"), nullable=False
-    )
-    hora_inicio = mapped_column(Time, nullable=True)
-    hora_fin = mapped_column(Time, nullable=True)
-    fecha = mapped_column(DateTime, nullable=False)
-    lugar_de_ensayo = mapped_column(String(200))
 
-    horas_de_trabajo = mapped_column(Float, nullable=False)
-    precio_hora = mapped_column(Float, nullable=False)
+    ensayo = mapped_column(
+        String(150), nullable=False
+    )  # ej: "Líquidos penetrantes"
 
-    precio_total = mapped_column(Float, nullable=False)
+    modalidad = mapped_column(
+        String(20), nullable=False
+    )  # "horas" | "jornada"
 
-    descripcion = mapped_column(Text)
+    precio_tecnico = mapped_column(Float, nullable=False)
+    precio_ayudante = mapped_column(Float, nullable=False)
 
-    created_at = mapped_column(
-        DateTime, default=lambda: datetime.now(timezone.utc)
-    )
+    horas_minimas = mapped_column(Float, default=1)
 
-    # Relaciones
-    cliente = relationship("Cliente", back_populates="albaranes")
-    tecnico = relationship("User", back_populates="albaranes")
+    activa = mapped_column(Boolean, default=True)
 
-    def calcular_total(self):
-        return round(self.horas_de_trabajo * self.precio_hora, 2)
+    cliente = relationship("Cliente", back_populates="tarifas")
 
     def serialize(self):
         return {
             "id": self.id,
-            "cliente": self.cliente.serialize(),
-            "tecnico": self.tecnico.serialize(),
+            "cliente_id": self.cliente_id,
+            "ensayo": self.ensayo,
+            "modalidad": self.modalidad,
+            "horas_minimas": self.horas_minimas,
+            "activa": self.activa
+        }
+
+
+# ─────────────────────────────────────────────
+# MODELO: Albarán
+# ─────────────────────────────────────────────
+class Albaran(db.Model):
+    __tablename__ = "albaran"
+
+    id = mapped_column(Integer, primary_key=True)
+
+    # Relaciones
+    cliente_id = mapped_column(Integer, ForeignKey("cliente.id"), nullable=False)
+    usuario_id = mapped_column(Integer, ForeignKey("user.id"), nullable=False)
+
+    cliente = relationship("Cliente", back_populates="albaranes")
+    usuario = relationship("User", back_populates="albaranes")
+
+    # Datos generales
+    fecha = mapped_column(Date, nullable=False)
+    hora_inicio = mapped_column(Time, nullable=True)
+    hora_fin = mapped_column(Time, nullable=True)
+
+    lugar_de_ensayo = mapped_column(Text, nullable=True)
+    persona_contacto = mapped_column(Text, nullable=True)
+
+    # Líneas de trabajo (texto final ya procesado)
+    linea_trabajo_1 = mapped_column(Text, nullable=False)
+    linea_trabajo_2 = mapped_column(Text, nullable=True)
+    linea_trabajo_3 = mapped_column(Text, nullable=True)
+
+    # Total final (único importe visible)
+    total_general = mapped_column(Float, nullable=False)
+
+    # Notas / descripciones opcionales
+    descripcion_linea_1 = mapped_column(Text, nullable=True)
+    descripcion_linea_2 = mapped_column(Text, nullable=True)
+    descripcion_linea_3 = mapped_column(Text, nullable=True)
+    descripcion_linea_4 = mapped_column(Text, nullable=True)
+
+    created_at = mapped_column(Date, default=datetime.utcnow)
+
+    def serialize(self):
+        return {
+            "id": self.id,
             "fecha": self.fecha.isoformat(),
-            "lugar_de_ensayo": self.lugar_de_ensayo,
-            "horas_de_trabajo": self.horas_de_trabajo,
-            "precio_hora": self.precio_hora,
-            "precio_total": self.precio_total,
-            "descripcion": self.descripcion
+            "cliente": self.cliente.serialize(),
+            "total_general": self.total_general,
+            "lineas": [
+                self.linea_trabajo_1,
+                self.linea_trabajo_2,
+                self.linea_trabajo_3
+            ]
         }
